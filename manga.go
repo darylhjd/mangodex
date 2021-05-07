@@ -15,8 +15,6 @@ const (
 	ViewMangaPath                = "manga/%s"
 	UpdateMangaPath              = ViewMangaPath
 	DeleteMangaPath              = ViewMangaPath
-	AddMangaInListPath           = "manga/%s/list/%s"
-	RemoveMangaInListPath        = AddMangaInListPath
 	UnfollowMangaPath            = "manga/%s/follow"
 	FollowMangaPath              = UnfollowMangaPath
 	MangaFeedPath                = "manga/%s/feed"
@@ -165,28 +163,6 @@ func (dc *DexClient) DeleteManga(id string) error {
 // DeleteMangaContext : DeleteManga with custom context.
 func (dc *DexClient) DeleteMangaContext(ctx context.Context, id string) error {
 	return dc.responseOp(ctx, http.MethodDelete, fmt.Sprintf(DeleteMangaPath, id), nil, nil)
-}
-
-// AddMangaInList : Add a Manga to a custom list.
-// https://api.mangadex.org/docs.html#operation/post-manga-id-list-listId
-func (dc *DexClient) AddMangaInList(mangaId, listId string) error {
-	return dc.AddMangaInListContext(context.Background(), mangaId, listId)
-}
-
-// AddMangaInListContext : AddMangaInList with custom context.
-func (dc *DexClient) AddMangaInListContext(ctx context.Context, mangaId, listId string) error {
-	return dc.responseOp(ctx, http.MethodPost, fmt.Sprintf(AddMangaInListPath, mangaId, listId), nil, nil)
-}
-
-// RemoveMangaInList : Remove a Manga from a custom list.
-// https://api.mangadex.org/docs.html#operation/delete-manga-id-list-listId
-func (dc *DexClient) RemoveMangaInList(mangaId, listId string) error {
-	return dc.RemoveMangaInListContext(context.Background(), mangaId, listId)
-}
-
-// RemoveMangaInListContext : RemoveMangaInList with custom context.
-func (dc *DexClient) RemoveMangaInListContext(ctx context.Context, mangaId, listId string) error {
-	return dc.responseOp(ctx, http.MethodDelete, fmt.Sprintf(RemoveMangaInListPath, mangaId, listId), nil, nil)
 }
 
 // UnfollowManga : Unfollow a Manga by ID.

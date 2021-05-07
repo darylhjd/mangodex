@@ -8,10 +8,14 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
-const BaseAPI = "https://api.mangadex.org"
+const (
+	BaseAPI  = "https://api.mangadex.org"
+	PingPath = "ping"
+)
 
 type DexClient struct {
 	client       http.Client
@@ -36,6 +40,23 @@ func NewDexClient() *DexClient {
 		client: client,
 		header: header,
 		logger: logger,
+	}
+}
+
+// Ping : Ping the API server.
+func (dc *DexClient) Ping(ctx context.Context) error {
+	u, _ := url.Parse(BaseAPI)
+	u.Path = PingPath
+
+	var res string
+	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &res)
+	switch {
+	case err != nil:
+		return err
+	case res != "pong":
+		return errors.New("unexpected response for ping")
+	default:
+		return nil
 	}
 }
 

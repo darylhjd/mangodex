@@ -4,8 +4,38 @@
 
 Golang API implementation of MangaDex v5's MVP API.
 
-To install, do `go get -u github.com/darylhjd/mangodex`.
-
 Full documentation is found [here](https://api.mangadex.org/docs.html).
 
 This API is still in Open Beta, so testing may not be complete. However, basic authentication has been tested.
+
+## Installation
+
+To install, do `go get -u github.com/darylhjd/mangodex`.
+
+## Usage
+
+```golang
+package main
+
+import (
+	"fmt"
+	"github.com/darylhjd/mangodex"
+)
+
+func main() {
+	// Create new client.
+	// Without logging in, you may not be able to access 
+	// all API functionality.
+	c := mangodex.NewDexClient()
+
+	// Login using your username and password.
+	err := c.Login("user", "password")
+	if err != nil {
+		fmt.Println("Could not login!")
+	}
+}
+```
+
+## Contributing
+
+Any contributions are welcome.

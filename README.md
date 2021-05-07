@@ -1,5 +1,7 @@
 # mangodex
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/darylhjd/mangodex.svg)](https://pkg.go.dev/github.com/darylhjd/mangodex)
+
 Golang API implementation of MangaDex v5's MVP API.
 
 To install, do `go get -u github.com/darylhjd/mangodex`.

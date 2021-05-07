@@ -1,7 +1,9 @@
 package mangodex
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,17 +11,19 @@ import (
 )
 
 const (
-	MangaListPath         = "manga"
-	CreateMangaPath       = MangaListPath
-	ViewMangaPath         = "manga/%s"
-	UpdateMangaPath       = ViewMangaPath
-	DeleteMangaPath       = ViewMangaPath
-	AddMangaInListPath    = "manga/%s/list/%s"
-	RemoveMangaInListPath = AddMangaInListPath
-	UnfollowMangaPath     = "manga/%s/follow"
-	FollowMangaPath       = UnfollowMangaPath
-	MangaFeedPath         = "manga/%s/feed"
-	MangaReadMarkersPath  = "manga/%s/read"
+	CreateMangaPath              = MangaListPath
+	ViewMangaPath                = "manga/%s"
+	UpdateMangaPath              = ViewMangaPath
+	DeleteMangaPath              = ViewMangaPath
+	AddMangaInListPath           = "manga/%s/list/%s"
+	RemoveMangaInListPath        = AddMangaInListPath
+	UnfollowMangaPath            = "manga/%s/follow"
+	FollowMangaPath              = UnfollowMangaPath
+	MangaFeedPath                = "manga/%s/feed"
+	MangaReadMarkersPath         = "manga/%s/read"
+	GetRandomMangaPath           = "manga/random"
+	TagListPath                  = "manga/tag"
+	UpdateMangaReadingStatusPath = "manga/%s/status"
 )
 
 type MangaList struct {
@@ -30,9 +34,9 @@ type MangaList struct {
 }
 
 type MangaResponse struct {
-	Result        string       `json:"result"`
-	Data          Manga        `json:"data"`
-	Relationships Relationship `json:"relationships"`
+	Result        string         `json:"result"`
+	Data          Manga          `json:"data"`
+	Relationships []Relationship `json:"relationships"`
 }
 
 func (mr *MangaResponse) GetResult() string {
@@ -74,32 +78,43 @@ type LocalisedString struct {
 	Property2 string `json:"property2"`
 }
 
-type ReadMarkersResponse struct {
+type ChapterReadMarkersResponse struct {
 	Result string   `json:"result"`
 	Data   []string `json:"data"`
 }
 
-func (rmr *ReadMarkersResponse) GetResult() string {
+func (rmr *ChapterReadMarkersResponse) GetResult() string {
 	return rmr.Result
 }
 
-// MangaList : Get a list of manga based on query parameters.
-// https://api.mangadex.org/docs.html#operation/get-search-manga
-func (dc *DexClient) MangaList(params url.Values) (*MangaList, error) {
-	return dc.MangaListContext(context.Background(), params)
+type TagResponse struct {
+	Result        string         `json:"result"`
+	Data          Tag            `json:"data"`
+	Relationships []Relationship `json:"relationships"`
 }
 
-// MangaListContext : MangaList with custom context.
-func (dc *DexClient) MangaListContext(ctx context.Context, params url.Values) (*MangaList, error) {
-	u, _ := url.Parse(BaseAPI)
-	u.Path = MangaListPath
+func (tg *TagResponse) GetResult() string {
+	return tg.Result
+}
 
-	// Set query parameters
-	u.RawQuery = params.Encode()
+type Tag struct {
+	ID         string        `json:"id"`
+	Type       string        `json:"type"`
+	Attributes TagAttributes `json:"attributes"`
+}
 
-	var l MangaList
-	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &l)
-	return &l, err
+type TagAttributes struct {
+	Name    LocalisedString `json:"name"`
+	Version int             `json:"version"`
+}
+
+type MangaReadingStatusResponse struct {
+	Result   string            `json:"result"`
+	Statuses map[string]string `json:"statuses"`
+}
+
+func (s *MangaReadingStatusResponse) GetResult() string {
+	return s.Result
 }
 
 // CreateManga : Create a new manga.
@@ -217,13 +232,60 @@ func (dc *DexClient) MangaFeedContext(ctx context.Context, id string, params url
 
 // MangaReadMarkers : Get list of Chapter IDs that are marked as read for a specified manga ID.
 // https://api.mangadex.org/docs.html#operation/get-manga-chapter-readmarkers
-func (dc *DexClient) MangaReadMarkers(id string) (*ReadMarkersResponse, error) {
+func (dc *DexClient) MangaReadMarkers(id string) (*ChapterReadMarkersResponse, error) {
 	return dc.MangaReadMarkersContext(context.Background(), id)
 }
 
 // MangaReadMarkersContext : MangaReadMarkers with custom context.
-func (dc *DexClient) MangaReadMarkersContext(ctx context.Context, id string) (*ReadMarkersResponse, error) {
-	var rmr ReadMarkersResponse
+func (dc *DexClient) MangaReadMarkersContext(ctx context.Context, id string) (*ChapterReadMarkersResponse, error) {
+	var rmr ChapterReadMarkersResponse
 	err := dc.responseOp(ctx, http.MethodGet, fmt.Sprintf(MangaReadMarkersPath, id), nil, &rmr)
 	return &rmr, err
+}
+
+// GetRandomManga : Return a random Manga.
+// https://api.mangadex.org/docs.html#operation/get-manga-random
+func (dc *DexClient) GetRandomManga() (*MangaResponse, error) {
+	return dc.GetRandomMangaContext(context.Background())
+}
+
+// GetRandomMangaContext : GetRandomManga with custom context.
+func (dc *DexClient) GetRandomMangaContext(ctx context.Context) (*MangaResponse, error) {
+	var mr MangaResponse
+	err := dc.responseOp(ctx, http.MethodGet, GetRandomMangaPath, nil, &mr)
+	return &mr, err
+}
+
+// TagList : Get tag list.
+// https://api.mangadex.org/docs.html#operation/get-manga-tag
+func (dc *DexClient) TagList() (*TagResponse, error) {
+	return dc.TagListContext(context.Background())
+}
+
+// TagListContext : TagList with custom context.
+func (dc *DexClient) TagListContext(ctx context.Context) (*TagResponse, error) {
+	var tg TagResponse
+	err := dc.responseOp(ctx, http.MethodGet, TagListPath, nil, &tg)
+	return &tg, err
+}
+
+// UpdateMangaReadingStatus : Update reading status for a manga.
+func (dc *DexClient) UpdateMangaReadingStatus(id string, status ReadStatus) error {
+	return dc.UpdateMangaReadingStatusContext(context.Background(), id, status)
+}
+
+// UpdateMangaReadingStatusContext : UpdateMangaReadingStatus with custom context.
+func (dc *DexClient) UpdateMangaReadingStatusContext(ctx context.Context, id string, status ReadStatus) error {
+	// Create required request body.
+	req := map[string]ReadStatus{
+		"status": status,
+	}
+	rbytes, err := json.Marshal(&req)
+	if err != nil {
+		return err
+	}
+
+	return dc.responseOp(ctx, http.MethodPost,
+		fmt.Sprintf(UpdateMangaReadingStatusPath, id), bytes.NewBuffer(rbytes),
+		nil)
 }

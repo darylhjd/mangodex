@@ -5,6 +5,45 @@ import (
 	"errors"
 	"io"
 	"net/url"
+	"os"
+)
+
+type Demographic string
+type Status string
+type ReadStatus string
+type ContentRating string
+type ListVisibility string
+
+const (
+	ShonenDemographic Demographic = "shonen"
+	ShoujoDemographic Demographic = "shoujo"
+	JoseiDemographic  Demographic = "josei"
+	SeinenDemograpic  Demographic = "seinen"
+
+	OngoingStatus   Status = "ongoing"
+	CompletedStatus Status = "completed"
+	HiatusStatus    Status = "hiatus"
+	AbandonedStatus Status = "abandoned"
+
+	ReadingReadStatus    ReadStatus = "reading"
+	OnHoldReadStatus     ReadStatus = "on_hold"
+	PlanToReadReadStatus ReadStatus = "plan_to_read"
+	DroppedReadStatus    ReadStatus = "dropped"
+	ReReadingReadStatus  ReadStatus = "re_reading"
+	CompletedReadStatus  ReadStatus = "completed"
+
+	SafeRating       ContentRating = "safe"
+	SuggestiveRating ContentRating = "suggestive"
+	EroticaRating    ContentRating = "erotica"
+	PornRating       ContentRating = "pornographic"
+
+	PublicList  ListVisibility = "public"
+	PrivateList ListVisibility = "private"
+)
+
+var (
+	testClient = NewDexClient()
+	user, pwd  = os.Getenv("USER"), os.Getenv("PASSWORD")
 )
 
 type ResponseType interface {

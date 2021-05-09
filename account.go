@@ -25,11 +25,9 @@ func (dc *DexClient) CreateAccount(user, pass, email string) (*UserResponse, err
 // CreateAccountContext : CreateAccount with custom context.
 func (dc *DexClient) CreateAccountContext(ctx context.Context, user, pass, email string) (*UserResponse, error) {
 	// Create request body
-	req := struct {
-		Username string
-		Password string
-		Email    string
-	}{Username: user, Password: pass, Email: email}
+	req := map[string]string{
+		"username": user, "password": pass, "email": email,
+	}
 	rbytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err

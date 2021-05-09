@@ -107,8 +107,8 @@ type TagAttributes struct {
 }
 
 type MangaReadingStatusResponse struct {
-	Result   string            `json:"result"`
-	Statuses map[string]string `json:"statuses"`
+	Result string `json:"result"`
+	Status string `json:"status"`
 }
 
 func (s *MangaReadingStatusResponse) GetResult() string {

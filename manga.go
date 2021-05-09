@@ -54,10 +54,10 @@ type Relationship struct {
 
 type MangaAttributes struct {
 	Title                  LocalisedStrings    `json:"title"`
-	AltTitles              []*LocalisedStrings `json:"altTitles"`
+	AltTitles              []LocalisedStrings  `json:"altTitles"`
 	Description            LocalisedStrings    `json:"description"`
 	IsLocked               bool                `json:"isLocked"`
-	Links                  []*string           `json:"links"`
+	Links                  LocalisedStrings    `json:"links"`
 	OriginalLanguage       string              `json:"originalLanguage"`
 	LastVolume             *string             `json:"lastVolume"`
 	LastChapter            *string             `json:"lastChapter"`

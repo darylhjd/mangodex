@@ -53,28 +53,25 @@ type Relationship struct {
 }
 
 type MangaAttributes struct {
-	Title                  LocalisedString    `json:"title"`
-	AltTitles              []*LocalisedString `json:"altTitles"`
-	Description            LocalisedString    `json:"description"`
-	IsLocked               bool               `json:"isLocked"`
-	Links                  []*string          `json:"links"`
-	OriginalLanguage       string             `json:"originalLanguage"`
-	LastVolume             *string            `json:"lastVolume"`
-	LastChapter            *string            `json:"lastChapter"`
-	PublicationDemographic *string            `json:"publicationDemographic"`
-	Status                 *string            `json:"status"`
-	Year                   int                `json:"year"`
-	ContentRating          *string            `json:"contentRating"`
-	Tags                   []*LocalisedString `json:"tags"`
-	Version                int                `json:"version"`
-	CreatedAt              string             `json:"createdAt"`
-	UpdatedAt              string             `json:"updatedAt"`
+	Title                  LocalisedStrings    `json:"title"`
+	AltTitles              []*LocalisedStrings `json:"altTitles"`
+	Description            LocalisedStrings    `json:"description"`
+	IsLocked               bool                `json:"isLocked"`
+	Links                  []*string           `json:"links"`
+	OriginalLanguage       string              `json:"originalLanguage"`
+	LastVolume             *string             `json:"lastVolume"`
+	LastChapter            *string             `json:"lastChapter"`
+	PublicationDemographic *string             `json:"publicationDemographic"`
+	Status                 *string             `json:"status"`
+	Year                   int                 `json:"year"`
+	ContentRating          *string             `json:"contentRating"`
+	Tags                   []*LocalisedStrings `json:"tags"`
+	Version                int                 `json:"version"`
+	CreatedAt              string              `json:"createdAt"`
+	UpdatedAt              string              `json:"updatedAt"`
 }
 
-type LocalisedString struct {
-	Property1 string `json:"property1"`
-	Property2 string `json:"property2"`
-}
+type LocalisedStrings map[string]string
 
 type ChapterReadMarkersResponse struct {
 	Result string   `json:"result"`
@@ -102,8 +99,8 @@ type Tag struct {
 }
 
 type TagAttributes struct {
-	Name    LocalisedString `json:"name"`
-	Version int             `json:"version"`
+	Name    LocalisedStrings `json:"name"`
+	Version int              `json:"version"`
 }
 
 type MangaReadingStatusResponse struct {

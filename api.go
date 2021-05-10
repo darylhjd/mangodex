@@ -21,7 +21,7 @@ type DexClient struct {
 	client       http.Client
 	header       http.Header
 	logger       *log.Logger
-	refreshToken string
+	RefreshToken string
 	isLoggedIn   bool
 }
 

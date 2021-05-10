@@ -62,7 +62,7 @@ func (dc *DexClient) LoginContext(ctx context.Context, user, pwd string) error {
 
 	// Set client Token and header for authorization.
 	dc.isLoggedIn = true
-	dc.refreshToken = ar.Token.Refresh
+	dc.RefreshToken = ar.Token.Refresh
 	dc.header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
 	return nil
 }
@@ -97,7 +97,7 @@ func (dc *DexClient) LogoutContext(ctx context.Context) error {
 
 	// Remove the stored client token and also authorization header if ok.
 	dc.isLoggedIn = false
-	dc.refreshToken = ""
+	dc.RefreshToken = ""
 	dc.header.Del("Authorization")
 	return nil
 }
@@ -108,11 +108,11 @@ func (dc *DexClient) RefreshSessionToken() error {
 	return dc.RefreshSessionTokenContext(context.Background())
 }
 
-// RefreshSessionTokenContext : refreshToken with custom context.
+// RefreshSessionTokenContext : RefreshToken with custom context.
 func (dc *DexClient) RefreshSessionTokenContext(ctx context.Context) error {
 	// Create required request body.
 	req := map[string]string{
-		"token": dc.refreshToken,
+		"token": dc.RefreshToken,
 	}
 	rBytes, err := json.Marshal(&req)
 	if err != nil {
@@ -128,7 +128,7 @@ func (dc *DexClient) RefreshSessionTokenContext(ctx context.Context) error {
 
 	// Update tokens
 	dc.isLoggedIn = true
-	dc.refreshToken = ar.Token.Refresh
+	dc.RefreshToken = ar.Token.Refresh
 	dc.header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
 	return nil
 }

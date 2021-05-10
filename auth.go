@@ -60,9 +60,9 @@ func (dc *DexClient) LoginContext(ctx context.Context, user, pwd string) error {
 		return err
 	}
 
-	// Set client Token and header for authorization.
-	dc.refreshToken = ar.Token.Refresh
-	dc.header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
+	// Set client Token and Header for authorization.
+	dc.RefreshToken = ar.Token.Refresh
+	dc.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
 	return nil
 }
 
@@ -94,23 +94,23 @@ func (dc *DexClient) LogoutContext(ctx context.Context) error {
 		return nil
 	}
 
-	// Remove the stored client token and also authorization header if ok.
-	dc.refreshToken = ""
-	dc.header.Del("Authorization")
+	// Remove the stored client token and also authorization Header if ok.
+	dc.RefreshToken = ""
+	dc.Header.Del("Authorization")
 	return nil
 }
 
-// RefreshToken : Refresh session token using refresh token.
+// RefreshSessionToken : Refresh session token using refresh token.
 // https://api.mangadex.org/docs.html#operation/post-auth-refresh
-func (dc *DexClient) RefreshToken() error {
-	return dc.RefreshTokenContext(context.Background())
+func (dc *DexClient) RefreshSessionToken() error {
+	return dc.RefreshSessionTokenContext(context.Background())
 }
 
-// RefreshTokenContext : RefreshToken with custom context.
-func (dc *DexClient) RefreshTokenContext(ctx context.Context) error {
+// RefreshSessionTokenContext : RefreshToken with custom context.
+func (dc *DexClient) RefreshSessionTokenContext(ctx context.Context) error {
 	// Create required request body.
 	req := map[string]string{
-		"token": dc.refreshToken,
+		"token": dc.RefreshToken,
 	}
 	rbytes, err := json.Marshal(&req)
 	if err != nil {
@@ -123,7 +123,7 @@ func (dc *DexClient) RefreshTokenContext(ctx context.Context) error {
 	}
 
 	// Update tokens
-	dc.refreshToken = ar.Token.Refresh
-	dc.header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
+	dc.RefreshToken = ar.Token.Refresh
+	dc.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
 	return nil
 }

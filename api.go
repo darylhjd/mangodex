@@ -19,9 +19,9 @@ const (
 
 type DexClient struct {
 	client       http.Client
-	header       http.Header
+	Header       http.Header
 	logger       *log.Logger
-	refreshToken string
+	RefreshToken string
 }
 
 // NewDexClient : New anonymous client. To login as an authenticated user, use DexClient.Login.
@@ -29,7 +29,7 @@ func NewDexClient() *DexClient {
 	// Create client
 	client := http.Client{}
 
-	// Create header
+	// Create Header
 	header := http.Header{}
 	header.Add("Accept", "application/json") // Set default accepted encoding
 
@@ -38,7 +38,7 @@ func NewDexClient() *DexClient {
 
 	return &DexClient{
 		client: client,
-		header: header,
+		Header: header,
 		logger: logger,
 	}
 }
@@ -66,8 +66,8 @@ func (dc *DexClient) Request(ctx context.Context, method, url string, body io.Re
 	if err != nil {
 		return nil, err
 	}
-	// Set header for HTTP Authentication
-	req.Header = dc.header
+	// Set Header for HTTP Authentication
+	req.Header = dc.Header
 
 	// Send request
 	resp, err := dc.client.Do(req)

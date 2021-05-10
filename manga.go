@@ -59,7 +59,7 @@ type MangaAttributes struct {
 	IsLocked               bool               `json:"isLocked"`
 	Links                  LocalisedStrings   `json:"links"`
 	OriginalLanguage       string             `json:"originalLanguage"`
-	LastVolume             *int               `json:"lastVolume"`
+	LastVolume             *string            `json:"lastVolume"`
 	LastChapter            *string            `json:"lastChapter"`
 	PublicationDemographic *string            `json:"publicationDemographic"`
 	Status                 *string            `json:"status"`

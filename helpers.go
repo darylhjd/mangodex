@@ -23,7 +23,7 @@ const (
 	OngoingStatus   Status = "ongoing"
 	CompletedStatus Status = "completed"
 	HiatusStatus    Status = "hiatus"
-	AbandonedStatus Status = "abandoned"
+	CancelledStatus Status = "cancelled"
 
 	ReadingReadStatus    ReadStatus = "reading"
 	OnHoldReadStatus     ReadStatus = "on_hold"

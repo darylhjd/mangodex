@@ -63,13 +63,13 @@ func (dc *DexClient) CreateScanGroupContext(ctx context.Context, name, leader st
 		Members []string
 		Version int
 	}{Name: name, Leader: leader, Members: members, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r ScanGroupResponse
-	err = dc.responseOp(ctx, http.MethodPost, CreateScanGroupPath, bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPost, CreateScanGroupPath, bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 
@@ -101,13 +101,13 @@ func (dc *DexClient) UpdateScanGroupContext(ctx context.Context, id, name, leade
 		Members []string
 		Version int
 	}{Name: name, Leader: leader, Members: members, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r ScanGroupResponse
-	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateScanGroupPath, id), bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateScanGroupPath, id), bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 

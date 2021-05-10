@@ -21,9 +21,9 @@ func TestDexClient(t *testing.T) {
 		t.Logf("Passed: %+v", res)
 	}
 
-	t.Log("Testing RefreshToken")
+	t.Log("Testing RefreshSessionToken")
 	t.Logf("Before: %+v", *testClient)
-	err = testClient.RefreshToken()
+	err = testClient.RefreshSessionToken()
 	if err != nil {
 		t.Error("Failed:", err)
 	} else {

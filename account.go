@@ -28,13 +28,13 @@ func (dc *DexClient) CreateAccountContext(ctx context.Context, user, pass, email
 	req := map[string]string{
 		"username": user, "password": pass, "email": email,
 	}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r UserResponse
-	err = dc.responseOp(ctx, http.MethodPost, CreateAccountPath, bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPost, CreateAccountPath, bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 
@@ -61,12 +61,12 @@ func (dc *DexClient) ResendActivationCodeContext(ctx context.Context, email stri
 	req := map[string]string{
 		"email": email,
 	}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return err
 	}
 
-	return dc.responseOp(ctx, http.MethodPost, ResendActivationCodePath, bytes.NewBuffer(rbytes), nil)
+	return dc.responseOp(ctx, http.MethodPost, ResendActivationCodePath, bytes.NewBuffer(rBytes), nil)
 }
 
 // RecoverAccount : Recover an account.
@@ -81,12 +81,12 @@ func (dc *DexClient) RecoverAccountContext(ctx context.Context, email string) er
 	req := map[string]string{
 		"email": email,
 	}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return err
 	}
 
-	return dc.responseOp(ctx, http.MethodPost, RecoverAccountPath, bytes.NewBuffer(rbytes), nil)
+	return dc.responseOp(ctx, http.MethodPost, RecoverAccountPath, bytes.NewBuffer(rBytes), nil)
 }
 
 // CompleteAccountRecover : Complete account recovery.
@@ -101,10 +101,10 @@ func (dc *DexClient) CompleteAccountRecoverContext(ctx context.Context, code, ne
 	req := map[string]string{
 		"newPassword": newp,
 	}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return err
 	}
 
-	return dc.responseOp(ctx, http.MethodPost, fmt.Sprintf(CompleteAccountRecoverPath, code), bytes.NewBuffer(rbytes), nil)
+	return dc.responseOp(ctx, http.MethodPost, fmt.Sprintf(CompleteAccountRecoverPath, code), bytes.NewBuffer(rBytes), nil)
 }

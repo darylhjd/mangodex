@@ -253,12 +253,12 @@ func (dc *DexClient) UpdateMangaReadingStatusContext(ctx context.Context, id str
 	req := map[string]ReadStatus{
 		"status": status,
 	}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return err
 	}
 
 	return dc.responseOp(ctx, http.MethodPost,
-		fmt.Sprintf(UpdateMangaReadingStatusPath, id), bytes.NewBuffer(rbytes),
+		fmt.Sprintf(UpdateMangaReadingStatusPath, id), bytes.NewBuffer(rBytes),
 		nil)
 }

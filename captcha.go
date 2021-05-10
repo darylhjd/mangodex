@@ -20,13 +20,13 @@ func (dc *DexClient) SolveCaptcha(cc string) error {
 // SolveCaptchaContext : SolveCaptcha with custom context.
 func (dc *DexClient) SolveCaptchaContext(ctx context.Context, cc string) error {
 	// Create request body
-	req := struct {
-		CaptchaChallenge string `json:"captchaChallenge"`
-	}{CaptchaChallenge: cc}
-	rbytes, err := json.Marshal(&req)
+	req := map[string]string{
+		"captchaChallenge": cc,
+	}
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return err
 	}
 
-	return dc.responseOp(ctx, http.MethodPost, SolveCaptchaPath, bytes.NewBuffer(rbytes), nil)
+	return dc.responseOp(ctx, http.MethodPost, SolveCaptchaPath, bytes.NewBuffer(rBytes), nil)
 }

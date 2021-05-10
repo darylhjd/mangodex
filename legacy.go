@@ -46,12 +46,12 @@ func (dc *DexClient) LegacyIDMappingContext(ctx context.Context, typ string, ids
 		Type string
 		IDs  []string
 	}{Type: typ, IDs: ids}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r LegacyMappingResponse
-	err = dc.responseOp(ctx, http.MethodPost, LegacyIDMappingPath, bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPost, LegacyIDMappingPath, bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }

@@ -65,13 +65,13 @@ func (dc *DexClient) CreateCustomListContext(ctx context.Context, name, visibili
 		manga      []string
 		Version    int
 	}{Name: name, Visibility: visibility, manga: manga, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r CustomListResponse
-	err = dc.responseOp(ctx, http.MethodPost, CreateCustomListPath, bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPost, CreateCustomListPath, bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 
@@ -103,13 +103,13 @@ func (dc *DexClient) UpdateCustomListContext(ctx context.Context, id, name, visi
 		manga      []string
 		Version    int
 	}{Name: name, Visibility: visibility, manga: manga, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r CustomListResponse
-	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateCustomListPath, id), bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateCustomListPath, id), bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 

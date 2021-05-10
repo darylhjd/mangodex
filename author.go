@@ -60,13 +60,13 @@ func (dc *DexClient) CreateAuthorContext(ctx context.Context, name string, versi
 		Name    string
 		Version int
 	}{Name: name, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r AuthorResponse
-	err = dc.responseOp(ctx, http.MethodPost, CreateAuthorPath, bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPost, CreateAuthorPath, bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 
@@ -96,13 +96,13 @@ func (dc *DexClient) UpdateAuthorContext(ctx context.Context, id, name string, v
 		Name    string
 		Version int
 	}{Name: name, Version: version}
-	rbytes, err := json.Marshal(&req)
+	rBytes, err := json.Marshal(&req)
 	if err != nil {
 		return nil, err
 	}
 
 	var r AuthorResponse
-	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateAuthorPath, id), bytes.NewBuffer(rbytes), &r)
+	err = dc.responseOp(ctx, http.MethodPut, fmt.Sprintf(UpdateAuthorPath, id), bytes.NewBuffer(rBytes), &r)
 	return &r, err
 }
 

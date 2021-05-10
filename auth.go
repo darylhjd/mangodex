@@ -127,3 +127,8 @@ func (dc *DexClient) RefreshSessionTokenContext(ctx context.Context) error {
 	dc.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ar.Token.Session))
 	return nil
 }
+
+// IsLoggedIn : Return true when client logged in and false otherwise.
+func (dc *DexClient) IsLoggedIn() bool {
+	return dc.RefreshToken != ""
+}

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -19,11 +20,10 @@ const (
 )
 
 type MDHomeClient struct {
-	Client    http.Client
-	BaseURL   string
-	Quality   string
-	Hash      string
-	ChapterID string
+	Client  http.Client
+	BaseURL string
+	Quality string
+	Hash    string
 }
 
 type ReportPayload struct {
@@ -57,11 +57,10 @@ func (dc *DexClient) NewMDHomeClientContext(ctx context.Context, chapId, quality
 	}
 
 	return &MDHomeClient{
-		Client:    http.Client{},
-		BaseURL:   r["baseUrl"],
-		Quality:   quality,
-		Hash:      hash,
-		ChapterID: chapId,
+		Client:  http.Client{},
+		BaseURL: r["baseUrl"],
+		Quality: quality,
+		Hash:    hash,
 	}, nil
 }
 
@@ -90,16 +89,15 @@ func (c *MDHomeClient) GetChapterPage(filename string) ([]byte, error) {
 
 // GetChapterPageWithContext : GetChapterPage with custom context.
 func (c *MDHomeClient) GetChapterPageWithContext(ctx context.Context, filename string) ([]byte, error) {
-	u, _ := url.Parse(c.BaseURL)
-	u.Path = strings.Join([]string{c.Quality, c.Hash, c.ChapterID, filename}, "/")
+	path := strings.Join([]string{c.BaseURL, c.Quality, c.Hash, filename}, "/")
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	r := ReportPayload{
-		URL:      u.String(),
+		URL:      path,
 		Success:  true,
 		Cached:   false,
 		Bytes:    0,
@@ -108,11 +106,17 @@ func (c *MDHomeClient) GetChapterPageWithContext(ctx context.Context, filename s
 
 	start := time.Now()
 	resp, err := c.Client.Do(req)
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
+		var errM string
+		if err != nil {
+			errM = err.Error()
+		} else {
+			errM = fmt.Sprintf("%d status code", resp.StatusCode)
+		}
 		r.Success = false
 		r.Duration = time.Since(start).Milliseconds()
 		_, _ = c.ReportContext(ctx, r) // Make report
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("unable to get chapter data: %s", errM))
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)

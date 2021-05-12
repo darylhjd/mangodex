@@ -37,10 +37,4 @@ func TestDexClient(t *testing.T) {
 	} else {
 		t.Logf("Passed: %+v", *testClient)
 	}
-
-	// Login again
-	err = testClient.Login(user, pwd)
-	if err != nil {
-		t.Error("Could not login again:", err)
-	}
 }

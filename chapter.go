@@ -40,8 +40,8 @@ type Chapter struct {
 
 type ChapterAttributes struct {
 	Title              string   `json:"title"`
-	Volume             string   `json:"volume"`
-	Chapter            string   `json:"chapter"`
+	Volume             *string  `json:"volume"`
+	Chapter            *string  `json:"chapter"`
 	TranslatedLanguage string   `json:"translatedLanguage"`
 	Hash               string   `json:"hash"`
 	Data               []string `json:"data"`

@@ -30,7 +30,7 @@ type MappingID struct {
 type MappingIDAttributes struct {
 	Type     string `json:"type"`
 	LegacyID int    `json:"legacyId"`
-	NewID    int    `json:"newId"`
+	NewID    string `json:"newId"`
 }
 
 // LegacyIDMapping : Map Legacy IDs.

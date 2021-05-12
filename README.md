@@ -38,4 +38,4 @@ func main() {
 
 ## Contributing
 
-Any contributions are welcome.
+Rapid changes expected. Any contributions are welcome.

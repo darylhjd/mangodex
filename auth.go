@@ -17,8 +17,9 @@ const (
 )
 
 type AuthResponse struct {
-	Result string `json:"result"`
-	Token  Token  `json:"token"`
+	Result  string  `json:"result"`
+	Token   Token   `json:"token"`
+	Message *string `json:"message"`
 }
 
 func (ar AuthResponse) GetResult() string {

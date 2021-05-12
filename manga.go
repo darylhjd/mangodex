@@ -53,22 +53,22 @@ type Relationship struct {
 }
 
 type MangaAttributes struct {
-	Title                  LocalisedStrings    `json:"title"`
-	AltTitles              []LocalisedStrings  `json:"altTitles"`
-	Description            LocalisedStrings    `json:"description"`
-	IsLocked               bool                `json:"isLocked"`
-	Links                  []*LocalisedStrings `json:"links"`
-	OriginalLanguage       string              `json:"originalLanguage"`
-	LastVolume             *string             `json:"lastVolume"`
-	LastChapter            *string             `json:"lastChapter"`
-	PublicationDemographic *string             `json:"publicationDemographic"`
-	Status                 *string             `json:"status"`
-	Year                   *int                `json:"year"`
-	ContentRating          *string             `json:"contentRating"`
-	Tags                   []Tag               `json:"tags"`
-	Version                int                 `json:"version"`
-	CreatedAt              string              `json:"createdAt"`
-	UpdatedAt              string              `json:"updatedAt"`
+	Title                  LocalisedStrings   `json:"title"`
+	AltTitles              []LocalisedStrings `json:"altTitles"`
+	Description            LocalisedStrings   `json:"description"`
+	IsLocked               bool               `json:"isLocked"`
+	Links                  LocalisedStrings   `json:"links"`
+	OriginalLanguage       string             `json:"originalLanguage"`
+	LastVolume             *string            `json:"lastVolume"`
+	LastChapter            *string            `json:"lastChapter"`
+	PublicationDemographic *string            `json:"publicationDemographic"`
+	Status                 *string            `json:"status"`
+	Year                   *int               `json:"year"`
+	ContentRating          *string            `json:"contentRating"`
+	Tags                   []Tag              `json:"tags"`
+	Version                int                `json:"version"`
+	CreatedAt              string             `json:"createdAt"`
+	UpdatedAt              string             `json:"updatedAt"`
 }
 
 type LocalisedStrings map[string]string

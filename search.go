@@ -10,6 +10,7 @@ const (
 	MangaListPath     = "manga"
 	ScanGroupListPath = "group"
 	ChapterListPath   = "chapter"
+	CoverArtListPath  = "cover"
 	AuthorListPath    = "author"
 )
 
@@ -66,6 +67,25 @@ func (dc *DexClient) ChapterListContext(ctx context.Context, params url.Values) 
 	u.RawQuery = params.Encode()
 
 	var l ChapterList
+	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &l)
+	return &l, err
+}
+
+// CoverArtList : Get a list of manga covers.
+// https://api.mangadex.org/docs.html#operation/get-cover
+func (dc *DexClient) CoverArtList(params url.Values) (*CoverArtList, error) {
+	return dc.CoverArtListContext(context.Background(), params)
+}
+
+// CoverArtListContext : CoverArtList with custom context.
+func (dc *DexClient) CoverArtListContext(ctx context.Context, params url.Values) (*CoverArtList, error) {
+	u, _ := url.Parse(BaseAPI)
+	u.Path = CoverArtListPath
+
+	// Set query parameters
+	u.RawQuery = params.Encode()
+
+	var l CoverArtList
 	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &l)
 	return &l, err
 }

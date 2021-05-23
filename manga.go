@@ -11,17 +11,19 @@ import (
 )
 
 const (
-	CreateMangaPath              = MangaListPath
-	ViewMangaPath                = "manga/%s"
-	UpdateMangaPath              = ViewMangaPath
-	DeleteMangaPath              = ViewMangaPath
-	UnfollowMangaPath            = "manga/%s/follow"
-	FollowMangaPath              = UnfollowMangaPath
-	MangaFeedPath                = "manga/%s/feed"
-	MangaReadMarkersPath         = "manga/%s/read"
-	GetRandomMangaPath           = "manga/random"
-	TagListPath                  = "manga/tag"
-	UpdateMangaReadingStatusPath = "manga/%s/status"
+	CreateMangaPath                = MangaListPath
+	GetMangaVolumesAndChaptersPath = "manga/%s/aggregate"
+	ViewMangaPath                  = "manga/%s"
+	UpdateMangaPath                = ViewMangaPath
+	DeleteMangaPath                = ViewMangaPath
+	UnfollowMangaPath              = "manga/%s/follow"
+	FollowMangaPath                = UnfollowMangaPath
+	MangaFeedPath                  = "manga/%s/feed"
+	MangaReadMarkersPath           = "manga/%s/read"
+	GetRandomMangaPath             = "manga/random"
+	TagListPath                    = "manga/tag"
+	GetMangaReadingStatusPath      = "manga/%s/status"
+	UpdateMangaReadingStatusPath   = GetMangaReadingStatusPath
 )
 
 type MangaList struct {
@@ -99,8 +101,39 @@ type Tag struct {
 }
 
 type TagAttributes struct {
-	Name    LocalisedStrings `json:"name"`
-	Version int              `json:"version"`
+	Name        LocalisedStrings `json:"name"`
+	Description LocalisedStrings `json:"description"`
+	Group       string           `json:"group"`
+	Version     int              `json:"version"`
+}
+
+type MangaVolChapsResponse struct {
+	Result  string               `json:"result"`
+	Volumes map[string]VolumeAgg `json:"volumes"`
+}
+
+func (r *MangaVolChapsResponse) GetResult() string {
+	return r.Result
+}
+
+type VolumeAgg struct {
+	Volume   string                `json:"volume"`
+	Count    int                   `json:"count"`
+	Chapters map[string]ChapterAgg `json:"chapters"`
+}
+
+type ChapterAgg struct {
+	Chapter string `json:"chapter"`
+	Count   int    `json:"count"`
+}
+
+type AllMangaReadingStatusResponse struct {
+	Result string            `json:"result"`
+	Status map[string]string `json:"statuses"`
+}
+
+func (s *AllMangaReadingStatusResponse) GetResult() string {
+	return s.Result
 }
 
 type MangaReadingStatusResponse struct {
@@ -108,8 +141,8 @@ type MangaReadingStatusResponse struct {
 	Status string `json:"status"`
 }
 
-func (s *MangaReadingStatusResponse) GetResult() string {
-	return s.Result
+func (r *MangaReadingStatusResponse) GetResult() string {
+	return r.Result
 }
 
 // CreateManga : Create a new manga.
@@ -123,6 +156,29 @@ func (dc *DexClient) CreateMangaContext(ctx context.Context, newManga io.Reader)
 	var mr MangaResponse
 	err := dc.responseOp(ctx, http.MethodPost, CreateMangaPath, newManga, &mr)
 	return &mr, err
+}
+
+// GetMangaVolumesAndChapters : Get volume and chapters aggregate for a manga.
+// https://api.mangadex.org/docs.html#tag/Manga/paths/~1manga~1{id}~1aggregate/get
+func (dc *DexClient) GetMangaVolumesAndChapters(id string, ls []string) (*MangaVolChapsResponse, error) {
+	return dc.GetMangaVolumesAndChaptersContext(context.Background(), id, ls)
+}
+
+// GetMangaVolumesAndChaptersContext : GetMangaVolumesAndChapters with custom context.
+func (dc *DexClient) GetMangaVolumesAndChaptersContext(ctx context.Context, id string, ls []string) (*MangaVolChapsResponse, error) {
+	u, _ := url.Parse(BaseAPI)
+	u.Path = fmt.Sprintf(GetMangaVolumesAndChaptersPath, id)
+
+	// Set query parameters
+	q := u.Query()
+	for _, l := range ls {
+		q.Add("translatedLanguage", l)
+	}
+	u.RawQuery = q.Encode()
+
+	var r MangaVolChapsResponse
+	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &r)
+	return &r, err
 }
 
 // ViewManga : View a manga by ID.
@@ -231,15 +287,31 @@ func (dc *DexClient) GetRandomMangaContext(ctx context.Context) (*MangaResponse,
 
 // TagList : Get tag list.
 // https://api.mangadex.org/docs.html#operation/get-manga-tag
-func (dc *DexClient) TagList() (*TagResponse, error) {
+func (dc *DexClient) TagList() (*[]TagResponse, error) {
 	return dc.TagListContext(context.Background())
 }
 
 // TagListContext : TagList with custom context.
-func (dc *DexClient) TagListContext(ctx context.Context) (*TagResponse, error) {
-	var tg TagResponse
-	err := dc.responseOp(ctx, http.MethodGet, TagListPath, nil, &tg)
+func (dc *DexClient) TagListContext(ctx context.Context) (*[]TagResponse, error) {
+	u, _ := url.Parse(BaseAPI)
+	u.Path = TagListPath
+
+	var tg []TagResponse
+	_, err := dc.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &tg)
 	return &tg, err
+}
+
+// GetMangaReadingStatus : Get reading status for a manga.
+// https://api.mangadex.org/docs.html#operation/get-manga-id-status
+func (dc *DexClient) GetMangaReadingStatus(id string) (*MangaReadingStatusResponse, error) {
+	return dc.GetMangaReadingStatusContext(context.Background(), id)
+}
+
+// GetMangaReadingStatusContext : GetMangaReadingStatus with custom context.
+func (dc *DexClient) GetMangaReadingStatusContext(ctx context.Context, id string) (*MangaReadingStatusResponse, error) {
+	var r MangaReadingStatusResponse
+	err := dc.responseOp(ctx, http.MethodGet, fmt.Sprintf(GetMangaReadingStatusPath, id), nil, &r)
+	return &r, err
 }
 
 // UpdateMangaReadingStatus : Update reading status for a manga.

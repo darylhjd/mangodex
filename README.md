@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/darylhjd/mangodex.svg)](https://pkg.go.dev/github.com/darylhjd/mangodex)
 
-Golang API implementation of MangaDex v5's MVP API.
+Golang API wrapper for MangaDex v5's MVP API.
 
 Full documentation is found [here](https://api.mangadex.org/docs.html).
 

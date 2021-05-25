@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -116,7 +115,7 @@ func (c *MDHomeClient) GetChapterPageWithContext(ctx context.Context, filename s
 		r.Success = false
 		r.Duration = time.Since(start).Milliseconds()
 		_, _ = c.ReportContext(ctx, r) // Make report
-		return nil, errors.New(fmt.Sprintf("unable to get chapter data: %s", errM))
+		return nil, fmt.Errorf("unable to get chapter data: %s", errM)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)

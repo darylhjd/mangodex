@@ -76,7 +76,7 @@ func (dc *DexClient) Request(ctx context.Context, method, url string, body io.Re
 	if err != nil {
 		return nil, err
 	} else if resp.StatusCode >= 300 || resp.StatusCode < 200 {
-		return nil, errors.New(fmt.Sprintf("non-2xx status code -> %d", resp.StatusCode))
+		return nil, fmt.Errorf("non-2xx status code -> %d", resp.StatusCode)
 	}
 
 	return resp, nil

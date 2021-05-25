@@ -13,6 +13,7 @@ import (
 
 const (
 	UploadMangaCoverPath = "manga/%s/cover"
+	GetMangaCoverPath    = "cover/%s"
 	EditMangaCoverPath   = "manga/%s/cover/%s"
 	DeleteMangaCoverPath = EditMangaCoverPath
 )
@@ -84,6 +85,19 @@ func (dc *DexClient) UploadMangaCoverContext(ctx context.Context, id, fPath stri
 
 	var r CoverResponse
 	err = dc.responseOp(ctx, http.MethodPost, fmt.Sprintf(UploadMangaCoverPath, id), &b, &r)
+	return &r, err
+}
+
+// GetMangaCover : Get a manga cover by ID.
+// https://api.mangadex.org/docs.html#operation/get-cover
+func (dc *DexClient) GetMangaCover(id string) (*CoverResponse, error) {
+	return dc.GetMangaCoverContext(context.Background(), id)
+}
+
+// GetMangaCoverContext : GetMangaCover with custom context.
+func (dc *DexClient) GetMangaCoverContext(ctx context.Context, id string) (*CoverResponse, error) {
+	var r CoverResponse
+	err := dc.responseOp(ctx, http.MethodGet, fmt.Sprintf(GetMangaCoverPath, id), nil, &r)
 	return &r, err
 }
 

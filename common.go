@@ -48,6 +48,9 @@ func (a *Relationship) UnmarshalJSON(data []byte) error {
 	default:
 		a.Attributes = &json.RawMessage{}
 	}
+
+	a.ID = typ.ID
+	a.Type = typ.Type
 	return json.Unmarshal(data, a.Attributes)
 }
 
@@ -57,6 +60,8 @@ type LocalisedStrings struct {
 }
 
 func (l *LocalisedStrings) UnmarshalJSON(data []byte) error {
+	l.Values = map[string]string{}
+
 	// Check whether there is more than one localised string.
 	var locals []map[string]string
 	// If failed, means there is only 1 string, or no string.
@@ -65,7 +70,6 @@ func (l *LocalisedStrings) UnmarshalJSON(data []byte) error {
 	}
 
 	// If pass, then add each item in the array to flatten to one map.
-	l.Values = map[string]string{}
 	for _, entry := range locals {
 		for key, value := range entry {
 			l.Values[key] = value

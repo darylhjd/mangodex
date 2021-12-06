@@ -29,29 +29,30 @@ type Relationship struct {
 
 func (a *Relationship) UnmarshalJSON(data []byte) error {
 	// Check for the type of the relationship, then unmarshal accordingly.
-	var typ struct {
+	typ := struct {
 		ID         string          `json:"id"`
 		Type       string          `json:"type"`
 		Attributes json.RawMessage `json:"attributes"`
-	}
+	}{}
 	if err := json.Unmarshal(data, &typ); err != nil {
 		return err
 	}
 
+	var err error
 	switch typ.Type {
-	case MangaRel:
-		a.Attributes = &MangaAttributes{}
 	case AuthorRel:
 		a.Attributes = &AuthorAttributes{}
+		err = json.Unmarshal(typ.Attributes, a.Attributes)
 	case ScanlationGroupRel:
 		a.Attributes = &ScanlationGroupAttributes{}
+		err = json.Unmarshal(typ.Attributes, a.Attributes)
 	default:
 		a.Attributes = &json.RawMessage{}
 	}
 
 	a.ID = typ.ID
 	a.Type = typ.Type
-	return json.Unmarshal(data, a.Attributes)
+	return err
 }
 
 // LocalisedStrings : A struct wrapping around a map containing each localised string.

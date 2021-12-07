@@ -1,7 +1,9 @@
 package mangodex
 
 import (
+	"fmt"
 	"net/url"
+	"os"
 	"strconv"
 	"testing"
 )
@@ -9,10 +11,19 @@ import (
 var client = NewDexClient()
 
 func TestLogin(t *testing.T) {
-	err := client.Auth.Login("-", "-")
+	err := client.Auth.Login(os.Getenv("USERNAME"), os.Getenv("PASSWORD"))
 	if err != nil {
 		t.Error("Login failed.")
 	}
+	fmt.Printf("%v\n", client)
+}
+
+func TestGetLoggedUser(t *testing.T) {
+	user, err := client.User.GetLoggedUser()
+	if err != nil {
+		t.Error("Getting user failed.")
+	}
+	t.Log(user)
 }
 
 func TestGetMangaList(t *testing.T) {
@@ -22,9 +33,8 @@ func TestGetMangaList(t *testing.T) {
 	// Include Author relationship
 	params.Set("includes[]", AuthorRel)
 	// If it is a search, then we add the search term.
-	list, err := client.Manga.GetMangaList(params)
+	_, err := client.Manga.GetMangaList(params)
 	if err != nil {
 		t.Errorf("Getting manga failed: %s\n", err.Error())
 	}
-	t.Log(list)
 }

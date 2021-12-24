@@ -1,14 +1,17 @@
 package mangodex
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 )
 
 const (
-	MangaChaptersPath = "manga/%s/feed"
+	MangaChaptersPath    = "manga/%s/feed"
+	MangaReadMarkersPath = "manga/%s/read"
 )
 
 // ChapterService : Provides Chapter services provided by the API.
@@ -51,19 +54,16 @@ func (c *Chapter) GetChapterNum() string {
 
 // ChapterAttributes : Attributes for a Chapter.
 type ChapterAttributes struct {
-	Title              string   `json:"title"`
-	Volume             *string  `json:"volume"`
-	Chapter            *string  `json:"chapter"`
-	TranslatedLanguage string   `json:"translatedLanguage"`
-	Hash               string   `json:"hash"`
-	Data               []string `json:"data"`
-	DataSaver          []string `json:"dataSaver"`
-	Uploader           string   `json:"uploader"`
-	ExternalURL        *string  `json:"externalUrl"`
-	Version            int      `json:"version"`
-	CreatedAt          string   `json:"createdAt"`
-	UpdatedAt          string   `json:"updatedAt"`
-	PublishAt          string   `json:"publishAt"`
+	Title              string  `json:"title"`
+	Volume             *string `json:"volume"`
+	Chapter            *string `json:"chapter"`
+	TranslatedLanguage string  `json:"translatedLanguage"`
+	Uploader           string  `json:"uploader"`
+	ExternalURL        *string `json:"externalUrl"`
+	Version            int     `json:"version"`
+	CreatedAt          string  `json:"createdAt"`
+	UpdatedAt          string  `json:"updatedAt"`
+	PublishAt          string  `json:"publishAt"`
 }
 
 // GetMangaChapters : Get a list of chapters for a manga.
@@ -109,4 +109,29 @@ func (s *ChapterService) GetReadMangaChaptersContext(ctx context.Context, id str
 	var rmr ChapterReadMarkers
 	err := s.client.RequestAndDecode(ctx, http.MethodGet, u.String(), nil, &rmr)
 	return &rmr, err
+}
+
+// SetReadUnreadMangaChapters : Set read/unread manga chapters.
+func (s *ChapterService) SetReadUnreadMangaChapters(id string, read, unRead []string) (*Response, error) {
+	return s.SetReadUnreadMangaChaptersContext(context.Background(), id, read, unRead)
+}
+
+// SetReadUnreadMangaChaptersContext : SetReadUnreadMangaChapters with custom context.
+func (s *ChapterService) SetReadUnreadMangaChaptersContext(ctx context.Context, id string, read, unRead []string) (*Response, error) {
+	u, _ := url.Parse(BaseAPI)
+	u.Path = fmt.Sprintf(MangaReadMarkersPath, id)
+
+	// Set request body.
+	req := map[string][]string{
+		"chapterIdsRead":   read,
+		"chapterIdsUnread": unRead,
+	}
+	rBytes, err := json.Marshal(&req)
+	if err != nil {
+		return nil, err
+	}
+
+	var r Response
+	err = s.client.RequestAndDecode(ctx, http.MethodPost, u.String(), bytes.NewBuffer(rBytes), &r)
+	return &r, err
 }

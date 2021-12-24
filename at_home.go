@@ -46,7 +46,7 @@ type MDHomeClient struct {
 	baseURL string
 	quality string
 	hash    string
-	pages   []string
+	Pages   []string
 }
 
 // NewMDHomeClient : Get MangaDex@Home client for a chapter.
@@ -82,7 +82,7 @@ func (s *AtHomeService) NewMDHomeClientContext(ctx context.Context, chapterID st
 		baseURL: r.BaseURL,
 		quality: quality,
 		hash:    r.Chapter.Hash,
-		pages:   pages,
+		Pages:   pages,
 	}, nil
 }
 

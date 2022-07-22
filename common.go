@@ -46,6 +46,8 @@ func (a *Relationship) UnmarshalJSON(data []byte) error {
 		a.Attributes = &AuthorAttributes{}
 	case ScanlationGroupRel:
 		a.Attributes = &ScanlationGroupAttributes{}
+	case CoverArtRel:
+		a.Attributes = &CoverAttributes{}
 	default:
 		a.Attributes = &json.RawMessage{}
 	}
@@ -54,7 +56,7 @@ func (a *Relationship) UnmarshalJSON(data []byte) error {
 	a.Type = typ.Type
 	if typ.Attributes != nil {
 		if err = json.Unmarshal(typ.Attributes, a.Attributes); err != nil {
-			return fmt.Errorf("error unmarshalling relationship of type %s: %s, %s", 
+			return fmt.Errorf("error unmarshalling relationship of type %s: %s, %s",
 				typ.Type, err.Error(), string(data))
 		}
 	}
